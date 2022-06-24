@@ -9,8 +9,6 @@ import Button from '@/components/Button'
 import Heading2 from '@/components/Heading2'
 import NewPoll from '@/components/NewPoll'
 
-// TODO: Add poll page
-
 const CreateButton = styled(Button)`
   background-image: linear-gradient(19deg, #21d4fd 0%, #b721ff 100%);
   margin-left: 20px;
@@ -170,7 +168,10 @@ class NewPollPage extends Component {
         .then(() => {
           const router = this.props.router;
           router.push({
-            pathname: `/poll/${_key}`,
+            pathname: '/poll/[_key]',
+            query: {
+              _key
+            },
             state: {
               title,
               options,
@@ -214,11 +215,11 @@ class NewPollPage extends Component {
                   onDelete={this.handleDelete}
                 />
                 <ActionContainer>
-                  {/* <Button
+                  <Button
                     disabled={disableCreate}
                     onClick={(() => { !disableCreate && this.handleCreate(fabricCtx.updateCollectionData) })}>
                     {loading ? 'Creating...' : 'Create'}
-                  </Button> */}
+                  </Button>
 
                   <CreateButton
                     disabled={loading}
@@ -237,7 +238,7 @@ class NewPollPage extends Component {
 
 function withHook(Component) {
   return function WrapperComponent(props) {
-    const router = useRouter
+    const router = useRouter()
     return <Component {...props} router={router} />
   }
 }

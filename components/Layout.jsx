@@ -46,9 +46,7 @@ export default function TemplateWrapper({ children }) {
   // Including `data`.
   const email = 'nobuyoshi.aquino@macrometa.com'
   const password = 'Welcome123!'
-  const config = {
-    url: 'https://sol1-eu-west.eng.macrometa.io/'
-  }
+  const config = 'https://sol1-eu-west.eng.macrometa.io/'
   const geoFabric = '_system'
 
   const data = {
