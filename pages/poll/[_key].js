@@ -3,6 +3,18 @@ import _ from 'lodash'
 import Poll from '@/components/Poll'
 import Layout from '@/components/Layout'
 
+export async function getServerSideProps() {
+  return {
+    props: {
+      jsc8Config: {
+        url: process.env.MACROMETA_URL,
+        fabricName: process.env.MACROMETA_FABRIC_NAME,
+        apiKey: process.env.MACROMETA_API_KEY
+      },
+    }
+  }
+}
+
 class PollContainer extends Component {
   state = {
     title: '',
@@ -63,7 +75,7 @@ class PollContainer extends Component {
 
   render() {
     return (
-      <Layout>
+      <Layout jsc8Config={this.props.jsc8Config}>
         {
           (fabricCtx) => {
             const { title, options } = this.state

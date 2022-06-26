@@ -3,8 +3,9 @@ import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { arrayMove } from 'react-sortable-hoc'
 import shortId from 'short-id'
+import jsc8 from 'jsc8'
 
-import Layout from '@/components/Layout'
+import Layout2 from '@/components/Layout2'
 import Button from '@/components/Button'
 import Heading2 from '@/components/Heading2'
 import NewPoll from '@/components/NewPoll'
@@ -34,6 +35,19 @@ const TitleInput = styled.input`
   color: black;
   font-size: 18px;
 `
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      jsc8Config: {
+        url: process.env.MACROMETA_URL,
+        fabricName: process.env.MACROMETA_FABRIC_NAME,
+        apiKey: process.env.MACROMETA_API_KEY,
+      },
+      collectionName: process.env.MACROMETA_POLLS_COLLECTION_NAME,
+    }
+  }
+}
 
 class NewPollPage extends Component {
   state = {
@@ -151,7 +165,7 @@ class NewPollPage extends Component {
     })
   }
 
-  handleCreate = (updateCollectionData) => {
+  handleCreate = () => {
     const { title, options } = this.state
     const _key = shortId.generate()
 
@@ -164,7 +178,10 @@ class NewPollPage extends Component {
     }
 
     this.setState({ loading: true }, () => {
-      updateCollectionData(obj)
+      const client = new jsc8(this.props.jsc8Config)
+      const collection = client.collection(this.props.collectionName)
+
+      collection.save(obj)
         .then(() => {
           const router = this.props.router;
           router.push({
@@ -192,46 +209,40 @@ class NewPollPage extends Component {
     const disableCreate = !title || optionsWithText.length < 2 || loading
 
     return (
-      <Layout>
-        {
-          (fabricCtx) => {
-            return (
-              <div>
-                <Heading2>Create a new Poll</Heading2>
-                <TitleContainer>
-                  <TitleLabel htmlFor="newPollTitle">Title</TitleLabel>
-                  <TitleInput
-                    id="newPollTitle"
-                    value={title}
-                    onChange={this.handleTitleChange}
-                  />
-                </TitleContainer>
-                <NewPoll
-                  options={options}
-                  onToggleEdit={this.handleToggleEdit}
-                  onTextChange={this.handleTextChange}
-                  onKeyDown={this.handleKeydown}
-                  onSortEnd={this.handleSortEnd}
-                  onDelete={this.handleDelete}
-                />
-                <ActionContainer>
-                  <Button
-                    disabled={disableCreate}
-                    onClick={(() => { !disableCreate && this.handleCreate(fabricCtx.updateCollectionData) })}>
-                    {loading ? 'Creating...' : 'Create'}
-                  </Button>
+      <Layout2>
+        <>
+          <Heading2>Create a new Poll</Heading2>
+          <TitleContainer>
+            <TitleLabel htmlFor="newPollTitle">Title</TitleLabel>
+            <TitleInput
+              id="newPollTitle"
+              value={title}
+              onChange={this.handleTitleChange}
+            />
+          </TitleContainer>
+          <NewPoll
+            options={options}
+            onToggleEdit={this.handleToggleEdit}
+            onTextChange={this.handleTextChange}
+            onKeyDown={this.handleKeydown}
+            onSortEnd={this.handleSortEnd}
+            onDelete={this.handleDelete}
+          />
+          <ActionContainer>
+            <Button
+              disabled={disableCreate}
+              onClick={(() => { !disableCreate && this.handleCreate() })}>
+              {loading ? 'Creating...' : 'Create'}
+            </Button>
 
-                  <CreateButton
-                    disabled={loading}
-                    onClick={() => { !loading && this.handleAddItem() }}>
-                    Add
-                  </CreateButton>
-                </ActionContainer>
-              </div>
-            )
-          }
-        }
-      </Layout>
+            <CreateButton
+              disabled={loading}
+              onClick={() => { !loading && this.handleAddItem() }}>
+              Add
+            </CreateButton>
+          </ActionContainer>
+        </>
+      </Layout2>
     )
   }
 }

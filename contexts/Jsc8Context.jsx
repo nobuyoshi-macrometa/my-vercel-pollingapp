@@ -26,11 +26,14 @@ class FabricProvider extends React.Component {
     fabric && fabric.close()
   }
 
-  updateFabric = async (config, email, password, geoFabric) => {
-    const fabricHandler = new jsc8(config)
-    await fabricHandler.login(email, password)
-    fabricHandler.useFabric(geoFabric)
-    this.setState({ fabric: fabricHandler, isSignedIn: true, config })
+  updateFabric = async (config) => {
+    const client = new jsc8(config)
+
+    this.setState({
+      fabric: client,
+      isSignedIn: true,
+      config: config.url,
+    })
   }
 
   updateCollectionData = (obj) => {
@@ -40,10 +43,14 @@ class FabricProvider extends React.Component {
   }
 
   establishLiveConnection = async (onmessage) => {
-    const { fabric, config } = this.state
-    const dcName = config.split("https://")[1]
-    const collection = fabric.collection(POLLS_COLLECTION_NAME)
-    const ws = await collection.onChange(dcName, `${POLLS_COLLECTION_NAME}-${getRandomInt()}`)
+    const { fabric } = this.state
+
+    const ws = await fabric.createStreamReader(
+      POLLS_COLLECTION_NAME,
+      `${POLLS_COLLECTION_NAME}-${Math.round(Math.random() * 99999)}`,
+      true,
+      true,
+    )
 
     ws.on("open", () => console.log(`Connection opened for ${POLLS_COLLECTION_NAME}`))
     ws.on("message", onmessage)

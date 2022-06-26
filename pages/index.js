@@ -1,39 +1,38 @@
+import jsc8 from 'jsc8'
 import Link from 'next/link'
 
-import Layout from '@/components/Layout'
+import Layout2 from '@/components/Layout2'
 import Button from '@/components/Button'
 
-// This function gets called at build time on server-side.
-// It won't be called on client-side, so you can even do
-// direct database queries.
-export async function getStaticProps() {
-  // Example:
-  // const res = await fetch('https://.../posts')
-  // const posts = await res.json()
+export async function getServerSideProps() {
+  const client = new jsc8({
+    url: process.env.MACROMETA_URL,
+    fabricName: process.env.MACROMETA_FABRIC_NAME,
+    apiKey: process.env.MACROMETA_API_KEY
+  })
 
-  // TODO: Implement call. This shouldn't be hard-coded.
+  const collection = process.env.MACROMETA_CONTENT_COLLECTION_NAME
+
+  const results = await client.executeQuery(`For doc IN ${collection} RETURN doc`)
+
   return {
     props: {
-      title: '<h2>A Next-Generation Polling Application</h2>',
-      content: '<p>Built from the ground up - Ut pariatur velit eu fugiat ut. Veniam commodo non esse proident ut anim irure voluptate commodo aliqua tempor Lorem excepteur cupidatat. Nulla commodo ex laboris eu sit nisi exercitation dolore labore qui elit non Lorem minim. Voluptate pariatur anim esse irure ipsum ut pariatur. Mollit occaecat velit occaecat sint pariatur tempor. Consectetur culpa tempor dolore amet officia dolore nulla nisi sunt ea.</p>'
-    },
+      title: results[0].title,
+      content: results[0].content,
+    }
   }
 }
 
 export default function Index({ title, content }) {
   return (
-    <Layout>
-      {() => (
-        <>
-          <div>
-            <div dangerouslySetInnerHTML={{ __html: title }}></div>
-            <div dangerouslySetInnerHTML={{ __html: content }}></div>
-            <Link href="/new">
-              <Button>New Poll</Button>
-            </Link>
-          </div>
-        </>
-      )}
-    </Layout>
+    <Layout2>
+      <>
+        <div dangerouslySetInnerHTML={{ __html: title }}></div>
+        <div dangerouslySetInnerHTML={{ __html: content }}></div>
+        <Link href="/new">
+          <Button>New Poll</Button>
+        </Link>
+      </>
+    </Layout2>
   )
 }
