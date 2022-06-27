@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import jsc8 from 'jsc8'
 
-const POLLS_COLLECTION_NAME = "polls"
+// This is very bad
+const POLLS_COLLECTION_NAME = "vercel_polls"
 
 const defaultState = {
   isSignedIn: false,
