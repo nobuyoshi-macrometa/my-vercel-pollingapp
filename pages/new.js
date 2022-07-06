@@ -10,14 +10,22 @@ import Button from '@/components/Button'
 import Heading2 from '@/components/Heading2'
 import NewPoll from '@/components/NewPoll'
 
+import IconPlusCircle from '@/assets/icon-plus-circle.svg'
+
 const CreateButton = styled(Button)`
-  background-image: linear-gradient(19deg, #21d4fd 0%, #b721ff 100%);
-  margin-left: 20px;
+  background-color: #FFFFFF;
+  background: #FFFFFF url(${IconPlusCircle.src}) 0 50% no-repeat;
+  color: #6767E6;
+  padding: 0 0 0 1.75rem;
+  &:focus,
+  &:hover {
+    background-color: #FFFFFF;
+  }
 `
 
 const ActionContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 `
 
 const TitleContainer = styled.div`
@@ -28,12 +36,16 @@ const TitleContainer = styled.div`
 `
 
 const TitleLabel = styled.label`
+  color: #383B46;
+  font-size: 0.9375rem;
   font-weight: bold;
+  margin: 0 0 .5rem;
 `
 
 const TitleInput = styled.input`
-  color: black;
+  color: #383B46;
   font-size: 18px;
+  padding: 0.25rem .5rem;
 `
 
 export async function getServerSideProps() {
@@ -211,7 +223,7 @@ class NewPollPage extends Component {
     return (
       <Layout2>
         <>
-          <Heading2>Create a new Poll</Heading2>
+          <Heading2>Create a new poll</Heading2>
           <TitleContainer>
             <TitleLabel htmlFor="newPollTitle">Title</TitleLabel>
             <TitleInput
@@ -229,17 +241,16 @@ class NewPollPage extends Component {
             onDelete={this.handleDelete}
           />
           <ActionContainer>
-            <Button
-              disabled={disableCreate}
-              onClick={(() => { !disableCreate && this.handleCreate() })}>
-              {loading ? 'Creating...' : 'Create'}
-            </Button>
-
             <CreateButton
               disabled={loading}
               onClick={() => { !loading && this.handleAddItem() }}>
-              Add
+              Add option
             </CreateButton>
+            <Button
+              disabled={disableCreate}
+              onClick={(() => { !disableCreate && this.handleCreate() })}>
+              {loading ? 'Creating poll...' : 'Create poll'}
+            </Button>
           </ActionContainer>
         </>
       </Layout2>

@@ -7,25 +7,30 @@ import {
   SortableHandle,
 } from 'react-sortable-hoc'
 
+import IconXCircle from '@/assets/icon-x-circle.svg'
+
 const OptionsContainer = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 0 0 30px;
+  margin: 0;
 `
 
 const OptionItemContainer = styled.li`
-  border-bottom: 1px solid #ddd;
-  padding: 10px 60px 10px 20px;
-  margin: 0 0 10px;
-  background-color: #f5f5f5;
+  background-color: #F1F2F4;
+  border-radius: 8px;
   list-style: none;
-  position: relative;
+  margin: 0 0 0.75rem;
   min-height: 36px;
+  padding: 1rem 4rem 1rem 1.25rem;
+  position: relative;
 `
 
 const OptionInputItem = styled.input`
   border: none;
-  background-color: inherit;
+  background-color: #FFFFFF;
+  color: #383B46;
+  font-size: 1rem;
+  padding: 0.25rem .5rem;
   width: 100%;
 `
 
@@ -35,6 +40,11 @@ const ActionItem = styled.div`
   top: 50%;
   transform: translateY(-50%);
   cursor: ${props => (props.editing ? 'pointer' : 'move')};
+`
+
+const ActionItemDelete = styled.img`
+  display: block;
+  vertical-align: middle;
 `
 
 const DragHandle = SortableHandle(() => <ActionItem>:::</ActionItem>)
@@ -48,6 +58,7 @@ const SortableItem = SortableElement(
       {editing ? (
         <OptionInputItem
           autoFocus
+          placeholder="Option label"
           value={text}
           onChange={e => onTextChange(e, id)}
           onKeyDown={onKeyDown}
@@ -60,7 +71,7 @@ const SortableItem = SortableElement(
         onClick={() => onDelete(id)}
         right={40}
         title="Delete">
-        x
+        <ActionItemDelete src={IconXCircle.src} />
       </ActionItem>
       <DragHandle />
     </OptionItemContainer>

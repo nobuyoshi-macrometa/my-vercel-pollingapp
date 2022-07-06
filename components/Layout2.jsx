@@ -15,7 +15,7 @@ export default function Layout({ children }) {
         ]}
       />
       <Header
-        background="background-image: linear-gradient(116deg, #08AEEA 0%, #2AF598 100%)"
+        background="background-image: linear-gradient(116deg, #6767E6 0%, #7141A1 100%)"
         title='Macrometa Polling App'
       />
         <Container>{children}</Container>
